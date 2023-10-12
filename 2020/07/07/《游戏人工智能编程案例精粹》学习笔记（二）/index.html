@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/favicon/site.webmanifest">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.css" integrity="sha256-vQkngPS8jiHHH0I6ABTZroZk8NPZ7b+MUReOFE9UsXQ=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"tmc0210.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.18.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于《游戏人工智能编程案例精粹》的学习笔记。本节主要是《掠夺者》的概述，路径规划与目标驱动。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《游戏人工智能编程案例精粹》学习笔记（二）">
+<meta property="og:url" content="https://tmc0210.github.io/2020/07/07/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="tmc&#39;s blogs">
+<meta property="og:description" content="关于《游戏人工智能编程案例精粹》的学习笔记。本节主要是《掠夺者》的概述，路径规划与目标驱动。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/07/08/L3GD8fa5QwlUZpC.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/08/GI6qM1JOpsTX8gv.png">
+<meta property="article:published_time" content="2020-07-06T18:16:45.000Z">
+<meta property="article:modified_time" content="2020-07-06T18:16:45.000Z">
+<meta property="article:author" content="tmc">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/07/08/L3GD8fa5QwlUZpC.png">
+
+
+<link rel="canonical" href="https://tmc0210.github.io/2020/07/07/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://tmc0210.github.io/2020/07/07/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/","path":"2020/07/07/《游戏人工智能编程案例精粹》学习笔记（二）/","title":"《游戏人工智能编程案例精粹》学习笔记（二）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《游戏人工智能编程案例精粹》学习笔记（二） | tmc's blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tmc's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%8A%E6%8E%A0%E5%A4%BA%E8%80%85%E3%80%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">《掠夺者》概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92"><span class="nav-number">2.</span> <span class="nav-text">路径规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">导航图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B2%92%E5%BA%A6"><span class="nav-number">2.2.</span> <span class="nav-text">粒度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E5%B9%B3%E6%BB%91"><span class="nav-number">2.3.</span> <span class="nav-text">路径平滑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%8D%E4%BD%8E%E6%B6%88%E8%80%97"><span class="nav-number">2.4.</span> <span class="nav-text">降低消耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%B0%E5%87%BA%E5%9B%B0%E5%A2%83"><span class="nav-number">2.5.</span> <span class="nav-text">走出困境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E9%A9%B1%E5%8A%A8%E6%99%BA%E8%83%BD%E4%BD%93%E8%A1%8C%E4%B8%BA"><span class="nav-number">3.</span> <span class="nav-text">目标驱动智能体行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E7%BB%BC%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">命令综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="nav-number">3.2.</span> <span class="nav-text">其他优化策略</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">tmc</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tmc0210" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tmc0210" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:494521535@qq.com" title="E-Mail → mailto:494521535@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.holdice.club/" title="https:&#x2F;&#x2F;blog.holdice.club&#x2F;" rel="noopener" target="_blank">holdice's blogs</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://shiraha.cn/" title="https:&#x2F;&#x2F;shiraha.cn&#x2F;" rel="noopener" target="_blank">七海の参考書</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.csdn.net/qq_39119496/article/details/103372437" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39119496&#x2F;article&#x2F;details&#x2F;103372437" rel="noopener" target="_blank">Ashmore</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://tmc0210.github.io/2020/07/07/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="tmc">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tmc's blogs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《游戏人工智能编程案例精粹》学习笔记（二） | tmc's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《游戏人工智能编程案例精粹》学习笔记（二）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-07-07 02:16:45" itemprop="dateCreated datePublished" datetime="2020-07-07T02:16:45+08:00">2020-07-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B/" itemprop="url" rel="index"><span itemprop="name">《游戏人工智能编程案例精粹》</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>关于《游戏人工智能编程案例精粹》的学习笔记。本节主要是《掠夺者》的概述，路径规划与目标驱动。</p>
+<span id="more"></span>
+
+<h2 id="《掠夺者》概述"><a href="#《掠夺者》概述" class="headerlink" title="《掠夺者》概述"></a>《掠夺者》概述</h2><p>这是书中的一个案例，基本玩法类似于2d吃鸡。其要求如下：  </p>
+<ul>
+<li><p>决策<br>AI需要制定游戏计划，长期目标，短期目标等。目标可以是攻击敌人、找到血包等。将目标与现有状态进行对比评估，从而作出决策。后面有单独章节介绍这一评估方式。</p>
+</li>
+<li><p>移动<br>AI需要综合使用上述的移动方式，使移动自然。主要使用的移动方式有Seek，Arrive，Wander，Wall Avoidance 和 Separation。  </p>
+</li>
+<li><p>路径规划<br>AI需要对于一个想要达成的目标，规划合适的路径去达成。后面有单独章节介绍完整的寻路</p>
+</li>
+<li><p>感知<br>AI需要模拟角色的视觉听觉以及记忆。如果不考虑角色的记忆而只是采用简单的视觉模拟感知，效果将大打折扣。想象一个情况，A的视野中有B，C两个敌人，A选择率先攻击B，于是转向B并发动攻击，这使得C消失在了视野中。于是消灭B后，A便不会回头攻击C，这显然是不合理的。所以可以为AI角色引入记忆功能，例如使用一个map存储上一次遇到各个敌人的时间，根据这个map对较近时候碰到的敌人作出反应。 </p>
+</li>
+<li><p>目标选择<br>AI需要选择合适的目标以发起攻击或追逐等操作，可以简单地以最近的敌人为目标，实际的开发可能需要综合考虑敌人的武器，生命等要素。</p>
+</li>
+<li><p>武器控制<br>AI需要根据敌人的距离等要素选择合适的武器进行攻击，例如近距离时不使用两败俱伤的爆炸性武器。不同武器也需要不同的瞄准方式，例如瞬发武器可以直接瞄准敌人当前位置，而弹道较慢的武器应当预判敌人的走位。另外，为保护玩家体验，可以加入进入视野到开始射击的反应时间以及射击的精度误差，此处误差建议为0～0.2弧度。武器控制的具体实现采用模糊逻辑。后面有单独章节介绍。</p>
+<blockquote>
+<p>tips</p>
+<ul>
+<li>对于某些游戏，AI对玩家的第一发子弹打偏是一个好主意，这可以提醒玩家AI的出现，使玩家做好准备。同时，如果能看到子弹的轨迹，这也能极大地提高游戏的刺激性  </li>
+<li>当玩家生命值较低时，降低AI射击的精准度。这可以使玩家更频繁地达成死里逃生或绝地反杀，使游戏更加刺激。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="路径规划"><a href="#路径规划" class="headerlink" title="路径规划"></a>路径规划</h2><h3 id="导航图"><a href="#导航图" class="headerlink" title="导航图"></a>导航图</h3><p>为确定一条路径，游戏环境需要被分割为导航图，从而利用搜索算法对导航图进行搜索。常见的导航图有如下几种：</p>
+<ul>
+<li><p>单元<br>  基于正方形或六边形的单元导航图，每个图中的节点表示一个单元，图中的边表示相邻单元的连接。对于类似文明的游戏，每个单元通过的消耗不一，这可以为每个地图分配相应的地图信息，使用该信息为地图的边加权。<br>  这一方法的问题在于随着单元格的增加，导航图的节点和边也将急速增加。</p>
+</li>
+<li><p>可视点<br>  也即POV导航图，通常手工放置地图中的关键点并将它们连接起来。作为游戏中的导航图。<br>  如果地图较为庞大复杂导致手工填充地图过于耗时，或是有随机生成地图功能，就需要开发自动生成POV图的方法，例如下面的扩展图形。</p>
+</li>
+<li><p>扩展图形<br>  如果游戏环境由多边形构建，可以利用图形自带的信息去创建POV图。</p>
+<ul>
+<li>将多边形向外扩展一定的半径（略大于智能体半径）</li>
+<li>把扩展出的图形的顶点作为导航图的节点</li>
+<li>测试这些节点的可见性，得出导航图<br>  因为扩展了一定的半径，智能体便可以沿导航图自由通行而不撞到墙壁。</li>
+</ul>
+</li>
+<li><p>导航网<br>  也即NavMesh，使用凸多边形描述游戏环境中的可访问区域。这里利用了凸多边形的重要性质：凸多边形的任意顶点可以互相直线到达。图的每个节点代表一个凸多边形区域而非一个点。</p>
+</li>
+</ul>
+<h3 id="粒度"><a href="#粒度" class="headerlink" title="粒度"></a>粒度</h3><ul>
+<li><p>粗粒度<br>  导航图较为简单，且只能沿导航图的边移动。类似吃豆人的游戏可以采取这种策略，但是需要任意导航的RTS游戏不适用。</p>
+</li>
+<li><p>细粒度<br>  增加导航图的粒度。细粒度导航图的生成通常使用洪水填充算法。</p>
+<ul>
+<li>将一个种子节点放入地图中</li>
+<li>算法在每个节点的方向上向外扩展纳入图中</li>
+<li>重复以上步骤，直到所有可以通航的区域都被填充满</li>
+</ul>
+</li>
+</ul>
+<h3 id="路径平滑"><a href="#路径平滑" class="headerlink" title="路径平滑"></a>路径平滑</h3><p>当游戏导航图是网状而实际游戏地图可以任意导航时，自动寻路创建的路径通常有额外的边。例如如下情况。  </p>
+<p><img data-src="https://i.loli.net/2020/07/08/L3GD8fa5QwlUZpC.png" alt="路径图">  </p>
+<p>A点试图到达C点，由于图的拓扑限制了45度的转向增量，寻路的结果可能是由A到B到C，但是实际游戏中需要从A到C直线前进，这时就需要对路径进行平滑处理。  </p>
+<ul>
+<li><p>粗糙而快地平滑路径<br>  算法按如下步骤执行  </p>
+<ul>
+<li>将两个迭代指针E1和E2放在第一条边和第二条边上。</li>
+<li>如果E1的起点和E2的终点之间可直达（注意考虑智能体体积），说明E1和E2可被省略。在这两点之间连接一条新边，作为E1，将下一条边作为E2。</li>
+<li>如果无法直达，则把E2赋给E1，并将E2指向路径中的下一条边。</li>
+<li>重复以上步骤，直到E2的终点等于路径目的地。</li>
+</ul>
+</li>
+<li><p>精确而慢地平滑路径<br>  每次E1向前移动，必须遍历从E1到最后一条边之间的所有边。这种方案较为精确但是显然消耗巨大。</p>
+</li>
+</ul>
+<h3 id="降低消耗"><a href="#降低消耗" class="headerlink" title="降低消耗"></a>降低消耗</h3><ul>
+<li><p>预先计算好的路径<br>  地图创建的同时，为地图创建一份查询表，查询表中包含每个节点到图中任意节点的路线。这可以用Dijkstra算法为每个节点创建一个最短路径树（SPT）以实现，并将SPT直接存储在一个二维整数数组中。<br>  查询表存储在二维整数数组的一个方式示例：<br>  节点0到节点5的最短路径的下一个节点是节点3，则将3存储在SPT[0][5]中，以此类推。</p>
+</li>
+<li><p>预先计算成本<br>  当考虑游戏中智能体的决策时，有时需要计算成本，例如移动所需的时间。如果对于每次决策都需要计算所有成本，那消耗将十分巨大。这时就需要一个计算好的成本表，这一创建方式与路径表类似，不过改为存储最短路径的总时间成本。</p>
+</li>
+<li><p>分层路径寻找<br>  利用两个不同粒度的导航图存储整个地图，例如对于中国地图，可以用粗粒度的导航图存储省之间的连接信息，细粒度的导航图存储城镇或道路的连接信息。当然如果两层不足以保证质量，也可以使用更多层。<br>  <img data-src="https://i.loli.net/2020/07/08/GI6qM1JOpsTX8gv.png" alt="分层路径寻找"></p>
+</li>
+</ul>
+<h3 id="走出困境"><a href="#走出困境" class="headerlink" title="走出困境"></a>走出困境</h3><p>当一个环境中包含大量智能体时，智能体将很容易陷入困境，例如在狭窄的门附近拥堵。例如在一个狭窄的门口，某一智能体试图定位附近的一个路点作为目标。这时由于某些原因，智能体被挤出了门，而智能体仍然在试图向该路点直线移动。这时该智能体就会开始日墙。<br>解决方案是每当更新时，计算到当前路点的距离。如果这个值的变化超过了预期，就需要重新规划路径。</p>
+<h2 id="目标驱动智能体行为"><a href="#目标驱动智能体行为" class="headerlink" title="目标驱动智能体行为"></a>目标驱动智能体行为</h2><p>游戏中智能体的游戏思路事实上可以分解为多个目标，而目标也可以分为更细。例如对于掠夺者游戏，角色为了赢得游戏，可以先去搜集武器；为了搜集武器，需要寻找武器的位置并获取武器；而如果在寻找武器的途中突然遇到了敌人，就需要评估双方实力并转而攻击敌人或者逃跑；攻击敌人的过程中需要选择合适的武器攻击敌人并不断走位；如果选择了攻击敌人并成功消灭敌人后，还需要继续刚才的寻找武器行为。  </p>
+<ul>
+<li>目标的实现类似于状态，不过分为更多层次。分解和试图达成目标的行为不断进行，直到整个层次已被遍历。目标具有类似状态模式中Enter，Execate，Exit的Activate，Process，Terminate方法。不同的是Activate可能需要每当激活该目标时被调用以进行初始化。  </li>
+<li>层次目标的实现类似于组合模式。同时通过将子目标压入子目标容器的前面以添加子目标，按照LIFO的顺序进行处理。</li>
+<li>目标之间的选择使用目标仲裁，通过整体目标Think实现，需要对当前的状态进行评估以计算不同目标的价值分数，比较得到合适的目标。</li>
+<li>为实现自动恢复被中断的活动，例如击杀半路遇到的敌人后继续寻找武器这一功能，其整体实现原理需类似于下推自动机。如果出现击杀敌人后寻路起点变化导致寻路丢失，也会因寻路目标的Activate再次被调用而重新开始寻路。</li>
+<li>游戏中可能需要一些特殊的障碍，例如打开开关才能开启的门。这些障碍应该存储在地图的信息中作为对AI透明的数据，需要花费的时间也应该体现在导航图的边成本中。为了使AI存储这些障碍，特殊的边需要额外存储对应的开关，当智能体试图通过该边时，通过备注的开关信息将开启开关这一新目标压入栈中</li>
+</ul>
+<h3 id="命令综述"><a href="#命令综述" class="headerlink" title="命令综述"></a>命令综述</h3><p>在掠夺者案例中，有如下一些组合命令举例</p>
+<ul>
+<li>Think<br>  也即游戏中的整体目标</li>
+<li>GetItem<br>  控制角色寻找回血道具&#x2F;武器等，这与玩家的生命&#x2F;距离目标的距离等相关。如果需要让角色在离物品较近时更倾向于获取物品，可以使评分与距离的平方成反比。</li>
+<li>MoveToPosition<br>  试图将角色移动到地图上的任意位置，这会请求一条路径。如果利用时间片方式进行规划，在路径被规划完成前，角色可以随机漫步。</li>
+<li>AttackTarget<br>  当玩家认为自己能够战胜当前目标敌人时，便可以主动攻击敌人。这包含了复杂的逻辑，例如选择合适的武器，进行走位以躲避子弹并达到武器最佳攻击距离等等。角色攻击目标的评分可以取决于当前双方的生命值&#x2F;距离&#x2F;武器等因素</li>
+<li>HuntTarget<br>  当AttackTarget行为的目标消失在视线中时，角色可能需要继续追击敌人。这需要再次评估且评分应当低于攻击视线中的同样敌人，毕竟追击敌人需要承担更多的未知风险。</li>
+</ul>
+<p>和如下基本命令举例</p>
+<ul>
+<li>Wander<br>  控制角色随机漫步</li>
+<li>TraverseEdge<br>  控制角色沿着一条路径移动，这可能需要使用上一节提供的各种技巧。</li>
+</ul>
+<h3 id="其他优化策略"><a href="#其他优化策略" class="headerlink" title="其他优化策略"></a>其他优化策略</h3><ul>
+<li>使AI可以在一定程度上预判其他角色（例如玩家）的行为。例如当玩家残血时，AI控制角色移动到较近的血包附近埋伏玩家。这可以通过对玩家的当前状态调用AI的目标评估函数得知角色的大致行为，这种预判的准确性取决于你设计的AI评估函数是否贴近玩家心理。</li>
+<li>使游戏中的AI具有不同个性。对于每种目标的评估函数，可以增加一个因子，作为角色的个性。例如在一个RTS游戏中，AI可以有运营风格，速攻风格等等；在掠夺者游戏中，AI可以有武器选择偏好，射击精度等等。  </li>
+<li>不同于FSM，目标仲裁事实上是一个数据驱动而非逻辑驱动的算法，所以只需改变数据就能改变AI角色的个性与行为，也可以将数据单独存放在脚本文件或一个表中使其便于调试。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/07/02/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/" rel="prev" title="《游戏人工智能编程案例精粹》学习笔记（一）">
+                  <i class="fa fa-angle-left"></i> 《游戏人工智能编程案例精粹》学习笔记（一）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/08/%E3%80%8A%E6%B8%B8%E6%88%8F%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%BC%96%E7%A8%8B%E6%A1%88%E4%BE%8B%E7%B2%BE%E7%B2%B9%E3%80%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/" rel="next" title="《游戏人工智能编程案例精粹》学习笔记（三）">
+                  《游戏人工智能编程案例精粹》学习笔记（三） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">tmc</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.umd.js" integrity="sha256-oyhjPiYRWGXaAt+ny/mTMWOnN1GBoZDUQnzzgC7FRI4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
